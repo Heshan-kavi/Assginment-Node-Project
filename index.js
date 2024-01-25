@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const pool = require('./dbConnection');
+const userRoute = require('./routes/user');
+app.use('/user', userRoute);
 
 app.use(express.json());
 
@@ -10,25 +11,6 @@ app.use(
         extended: true,
     })
 )
-
-app.get('/', function (req, res) {
-
-    pool.getConnection(function(err,connection){
-
-        if(err){
-            connection.release();
-            throw err;
-        }
-
-        connection.query('SELECT * from Patients', (err, rows, fields) => {
-            if (err) throw err
-          
-            console.log(rows)
-
-            connection.release();
-          })
-    })
-});
 
 app.listen(port, () => {
     console.log('app is running on port ' + port);
